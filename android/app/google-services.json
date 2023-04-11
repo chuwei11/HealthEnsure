@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1018668404314",
+    "project_id": "healthensure-4c0a8",
+    "storage_bucket": "healthensure-4c0a8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018668404314:android:6c5ce1922c580cc70a5263",
+        "android_client_info": {
+          "package_name": "com.example.healthensure"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1018668404314-ar1dso7usb2olvo5cn35hada97mpp6sm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCs-2SF1Q0FS0s1QdIvmqrszMq20bFfzZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1018668404314-ar1dso7usb2olvo5cn35hada97mpp6sm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

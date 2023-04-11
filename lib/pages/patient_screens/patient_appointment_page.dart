@@ -1,0 +1,269 @@
+import 'package:flutter/material.dart';
+import 'package:healthensure/utils/config.dart';
+
+class PatientAppointmentPage extends StatefulWidget {
+  const PatientAppointmentPage({super.key});
+
+  @override
+  State<PatientAppointmentPage> createState() => _PatientAppointmentPageState();
+}
+
+// appointment status
+enum AppointmentStatus { upcoming, complete, cancelled }
+
+class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
+  // set initial status as 'upcoming'
+  AppointmentStatus status = AppointmentStatus.upcoming;
+  Alignment _alignment = Alignment.centerLeft;
+  List<dynamic> schedules = [
+    {
+      "doc_name": "Lisa Madison",
+      "doc_profile": "assets/profile/Doctor2.png",
+      "specialization": "Dentistry",
+      "status": AppointmentStatus.complete,
+    },
+    {
+      "doc_name": "Johnson Tan",
+      "doc_profile": "assets/profile/Doctor3.png",
+      "specialization": "Cardiology",
+      "status": AppointmentStatus.cancelled,
+    },
+    {
+      "doc_name": "Ageline Lim",
+      "doc_profile": "assets/profile/Doctor4.png",
+      "specialization": "Psychiatry",
+      "status": AppointmentStatus.cancelled,
+    },
+    {
+      "doc_name": "Brandon Chen",
+      "doc_profile": "assets/profile/Doctor5.png",
+      "specialization": "Gynecology",
+      "status": AppointmentStatus.upcoming,
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    //return filtered appointment
+    // schedule info
+    List<dynamic> filteredSchedule = schedules.where((var schedule) {
+      // switch (schedule['status']) {
+      //   case 'upcoming':
+      //     schedule['status'] = AppointmentStatus.upcoming;
+      //     break;
+      //   case 'complete':
+      //     schedule['status'] = AppointmentStatus.complete;
+      //     break;
+      //   case 'cancelled':
+      //     schedule['status'] = AppointmentStatus.cancelled;
+      //     break;
+      // }
+      return schedule['status'] == status;
+    }).toList();
+
+    return SafeArea(
+        child: Padding(
+      padding: const EdgeInsets.only(left: 25, top: 20, right: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          const Text(
+            'Appointment Schedule',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Config.smallSpacingBox,
+          Stack(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // filtered tabs arrangement
+                    for (AppointmentStatus appStatus
+                        in AppointmentStatus.values)
+                      Expanded(
+                          child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  if (appStatus == AppointmentStatus.upcoming) {
+                                    status = AppointmentStatus.upcoming;
+                                    _alignment = Alignment.centerLeft;
+                                  } else if (appStatus ==
+                                      AppointmentStatus.complete) {
+                                    status = AppointmentStatus.complete;
+                                    _alignment = Alignment.center;
+                                  } else if (appStatus ==
+                                      AppointmentStatus.cancelled) {
+                                    status = AppointmentStatus.cancelled;
+                                    _alignment = Alignment.centerRight;
+                                  }
+                                });
+                              },
+                              child: Center(child: Text(appStatus.name))))
+                  ],
+                ),
+              ),
+              AnimatedAlign(
+                alignment: _alignment,
+                duration: Duration(milliseconds: 200),
+                child: Container(
+                  width: 100,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Config.primaryColor,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Center(
+                    child: Text(
+                      status.name,
+                      style: TextStyle(
+                        color: Colors.yellowAccent,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+          Config.smallSpacingBox,
+          Expanded(
+            child: ListView.builder(
+                itemCount: filteredSchedule.length,
+                itemBuilder: (context, index) {
+                  var _schedule = filteredSchedule[index];
+                  bool isLastElem = filteredSchedule.length + 1 == index;
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: Colors.grey,
+                      ),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    margin: !isLastElem
+                        ? const EdgeInsets.only(bottom: 20)
+                        : EdgeInsets.zero,
+                    child: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage(_schedule['doc_profile']),
+                                ),
+                                SizedBox(width: 5),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(_schedule['doc_name'],
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          //color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                    SizedBox(height: 5),
+                                    Text(_schedule['specialization'],
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                        )),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Config.smallSpacingBox,
+                            // Schedule Card
+                            ScheduleCard(),
+                            Config.smallSpacingBox,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () {},
+                                    child: Text('Cancel',
+                                        style: TextStyle(
+                                            color: Config.secondaryColor)),
+                                  ),
+                                ),
+                                SizedBox(width: 20),
+                                Expanded(
+                                  child: OutlinedButton(
+                                    style: OutlinedButton.styleFrom(
+                                      backgroundColor: Config.secondaryColor,
+                                    ),
+                                    onPressed: () {},
+                                    child: Text('Reschedule',
+                                        style: TextStyle(color: Colors.white)),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        )),
+                  );
+                }),
+          ),
+        ],
+      ),
+    ));
+  }
+}
+
+// Schedule Widget
+class ScheduleCard extends StatefulWidget {
+  const ScheduleCard({super.key});
+
+  @override
+  State<ScheduleCard> createState() => _ScheduleCardState();
+}
+
+class _ScheduleCardState extends State<ScheduleCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.lightBlueAccent,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: const <Widget>[
+          Icon(
+            Icons.calendar_month_sharp,
+            color: Colors.white,
+            size: 15,
+          ),
+          SizedBox(width: 5),
+          Text('Monday, 11/28/2022', style: TextStyle(color: Colors.white)),
+          SizedBox(width: 20),
+          Icon(
+            Icons.access_alarm,
+            color: Colors.white,
+            size: 17,
+          ),
+          SizedBox(width: 5),
+          Flexible(
+              child: Text('11.00AM', style: TextStyle(color: Colors.white)))
+        ],
+      ),
+    );
+  }
+}
