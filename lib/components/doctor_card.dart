@@ -49,7 +49,7 @@ class DoctorCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: const <Widget>[
-                        Icon(Icons.star_border, color: Colors.yellow, size: 16),
+                        Icon(Icons.star, color: Colors.amber, size: 18),
                         Spacer(flex: 1),
                         Text('4.5'),
                         Spacer(flex: 1),

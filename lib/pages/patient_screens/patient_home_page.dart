@@ -31,31 +31,31 @@ class PatientHomePageState extends State<PatientHomePage> {
   List<Map<String, dynamic>> medCat = [
     {
       "icon": FontAwesomeIcons.userDoctor,
-      "specialize": "General",
+      "specialty": "General",
     },
     {
       "icon": FontAwesomeIcons.heartPulse,
-      "specialize": "Cardiology",
+      "specialty": "Cardiology",
     },
     {
       "icon": FontAwesomeIcons.child,
-      "specialize": "Pediatrics",
+      "specialty": "Pediatrics",
     },
     {
       "icon": FontAwesomeIcons.tooth,
-      "specialize": "Dentistry",
+      "specialty": "Dentistry",
     },
     {
       "icon": FontAwesomeIcons.personPregnant,
-      "specialize": "Gynecology",
+      "specialty": "Gynecology",
     },
     {
       "icon": FontAwesomeIcons.bone,
-      "specialize": "Orthopedics",
+      "specialty": "Orthopedics",
     },
     {
       "icon": FontAwesomeIcons.brain,
-      "specialize": "Psychiatry",
+      "specialty": "Psychiatry",
     },
   ];
 
@@ -135,7 +135,7 @@ class PatientHomePageState extends State<PatientHomePage> {
         //                                   width: 20,
         //                                 ),
         //                                 Text(
-        //                                   medCat[index]['specialize'],
+        //                                   medCat[index]['specialty'],
         //                                   style: const TextStyle(
         //                                     fontSize: 16,
         //                                     color: Colors.white,
@@ -274,7 +274,7 @@ class PatientHomePageState extends State<PatientHomePage> {
                       height: 20,
                     ),
                     Config.smallSpacingBox,
-                    // specialize listing
+                    // specialty listing
                     const Text('Category', // hardcode username
                         style: TextStyle(
                           fontSize: 18,
@@ -299,7 +299,7 @@ class PatientHomePageState extends State<PatientHomePage> {
                                   FaIcon(medCat[index]['icon'],
                                       color: Colors.white),
                                   const SizedBox(width: 20),
-                                  Text(medCat[index]['specialize'],
+                                  Text(medCat[index]['specialty'],
                                       style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
@@ -321,7 +321,7 @@ class PatientHomePageState extends State<PatientHomePage> {
                     AppointmentCard(),
                     Config.smallSpacingBox,
                     Text(
-                      'Doctor List',
+                      'Recommended Doctors',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,

@@ -67,50 +67,68 @@ class AboutDoctor extends StatelessWidget {
   Widget build(BuildContext context) {
     Config().init(context);
     return Container(
-        width: double.infinity,
+        //width: double.infinity,
         child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                radius: 70.0,
-                backgroundImage: AssetImage('assets/profile/Doctor2.png'),
-                backgroundColor: Colors.white,
-              ),
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          // child: CircleAvatar(
+          //   radius: 70.0,
+          //   backgroundImage: AssetImage('assets/profile/Doctor2.png'),
+          //   backgroundColor: Colors.white,
+          // ),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height / 5.0,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/profile/Doctor2.png'),
+              fit: BoxFit.contain,
             ),
-            Config.mediumSpacingBox,
-            Text(
-              "Dr Lisa Madison",
-              style: TextStyle(color: Colors.black),
-            ),
-            Config.smallSpacingBox,
-            SizedBox(
-                width: Config.widthSize * 0.75,
-                child: Text(
-                  'MBBS (International Medical University, Malaysia, MRCP (Royal College of Physicians, United Kingdom)',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 16,
-                  ),
-                  softWrap: true,
-                  textAlign: TextAlign.center,
-                )),
-            Config.smallSpacingBox,
-            SizedBox(
-              width: Config.widthSize * 0.75,
-              child: Text(
-                'Gleneagles Hospital Penang',
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-                softWrap: true,
-                textAlign: TextAlign.center,
+          ),
+        ),
+        Config.mediumSpacingBox,
+        Text(
+          "Dr Lisa Madison",
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.black,
+            fontWeight: FontWeight.w800,
+            decoration: TextDecoration.underline,
+            decorationThickness: 2.0,
+            decorationStyle: TextDecorationStyle.solid,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+        Config.smallSpacingBox,
+        SizedBox(
+            width: Config.widthSize * 0.75,
+            child: Text(
+              'MBBS (International Medical University, Malaysia, MRCP (Royal College of Physicians, United Kingdom)',
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 16,
               ),
-            )
-          ],
-        ));
+              softWrap: true,
+              textAlign: TextAlign.center,
+            )),
+        Config.smallSpacingBox,
+        SizedBox(
+          width: Config.widthSize * 0.75,
+          child: Text(
+            '"Gleneagles Hospital Penang"',
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+            softWrap: true,
+            textAlign: TextAlign.center,
+          ),
+        )
+      ],
+    ));
   }
 }
 
@@ -156,7 +174,7 @@ class DoctorInfo extends StatelessWidget {
     return Row(
       children: <Widget>[
         InfoCard(
-          label: 'Patients',
+          label: 'Patient Count',
           value: '160',
         ),
         SizedBox(width: 10),
@@ -186,7 +204,7 @@ class InfoCard extends StatelessWidget {
     return Expanded(
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(60),
           color: Config.primaryColor,
         ),
         padding: EdgeInsets.symmetric(
@@ -197,15 +215,15 @@ class InfoCard extends StatelessWidget {
           children: <Widget>[
             Text(label,
                 style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                 )),
             Config.tinySpacingBox,
             Text(value,
                 style: TextStyle(
-                  color: Colors.yellowAccent,
-                  fontSize: 16,
+                  color: Colors.yellow,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 )),
           ],
