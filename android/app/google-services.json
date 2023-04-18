@@ -29,6 +29,13 @@
             {
               "client_id": "1018668404314-ar1dso7usb2olvo5cn35hada97mpp6sm.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1018668404314-48kh91dqlr2vadsh960u960nr7akbo2n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.healthensure"
+              }
             }
           ]
         }

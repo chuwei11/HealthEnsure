@@ -9,13 +9,19 @@ import 'package:healthensure/auth/register_page.dart';
 import 'firebase_options.dart';
 import 'main_layout.dart';
 
-Future main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    //options: DefaultFirebaseOptions.currentPlatform,
+    options: const FirebaseOptions(
+      apiKey: "AIzaSyCs-2SF1Q0FS0s1QdIvmqrszMq20bFfzZA",
+      appId: "1:1018668404314:android:6c5ce1922c580cc70a5263",
+      messagingSenderId: "1018668404314",
+      projectId: "healthensure-4c0a8",
+    ),
   );
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

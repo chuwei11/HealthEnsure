@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:healthensure/main_layout.dart';
 import 'package:healthensure/auth/register_page.dart';
+import 'package:healthensure/providers/dio_provider.dart';
 import '../pages/Admin_home_page.dart';
 import '../pages/agent_home_page.dart';
 import '../utils/config.dart';
@@ -270,6 +271,46 @@ class _LoginPageState extends State<LoginPage> {
                       // ),
                       // SizedBox(height: 25),
 
+                      // //sign in button
+                      // MaterialButton(
+                      //   color: Config.primaryColor,
+                      //   shape: RoundedRectangleBorder(
+                      //       borderRadius:
+                      //           BorderRadius.all(Radius.circular(20.0))),
+                      //   elevation: 5.0,
+                      //   height: 40,
+                      //   onPressed: () {
+                      //     setState(() {
+                      //       visible = true;
+                      //     });
+                      //     signIn(
+                      //         _emailController.text, _passwordController.text);
+                      //     // if (_formKey.currentState!.validate()) {
+                      //     //   try {
+                      //     //     signIn(_emailController.text,
+                      //     //         _passwordController.text);
+                      //     //   } on FirebaseAuthException catch (e) {}
+                      //     //   ;
+                      //     //   ;
+                      //     // }
+                      //   },
+                      //   child: Text(
+                      //     "Login",
+                      //     style: TextStyle(
+                      //       fontSize: 20,
+                      //     ),
+                      //   ),
+                      // ),
+                      // Config.smallSpacingBox,
+                      // // Visibility(
+                      // //     maintainSize: true,
+                      // //     maintainAnimation: true,
+                      // //     maintainState: true,
+                      // //     visible: visible,
+                      // //     child: Container(
+                      // //         child: CircularProgressIndicator(
+                      // //             color: Colors.white))),
+
                       //sign in button
                       MaterialButton(
                         color: Config.primaryColor,
@@ -278,20 +319,16 @@ class _LoginPageState extends State<LoginPage> {
                                 BorderRadius.all(Radius.circular(20.0))),
                         elevation: 5.0,
                         height: 40,
-                        onPressed: () {
+                        onPressed: () async {
+                          final token = await DioProvider().getToken(
+                              _emailController.text, _passwordController.text);
                           setState(() {
                             visible = true;
                           });
+                          // try get token
+                          print(token);
                           signIn(
                               _emailController.text, _passwordController.text);
-                          // if (_formKey.currentState!.validate()) {
-                          //   try {
-                          //     signIn(_emailController.text,
-                          //         _passwordController.text);
-                          //   } on FirebaseAuthException catch (e) {}
-                          //   ;
-                          //   ;
-                          // }
                         },
                         child: Text(
                           "Login",
@@ -301,14 +338,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       Config.smallSpacingBox,
-                      // Visibility(
-                      //     maintainSize: true,
-                      //     maintainAnimation: true,
-                      //     maintainState: true,
-                      //     visible: visible,
-                      //     child: Container(
-                      //         child: CircularProgressIndicator(
-                      //             color: Colors.white))),
 
                       //Register if not a member
                       Column(

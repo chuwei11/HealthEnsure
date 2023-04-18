@@ -14,6 +14,7 @@ import 'package:flutter/foundation.dart'
 ///   options: DefaultFirebaseOptions.currentPlatform,
 /// );
 /// ```
+
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -66,7 +67,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1018668404314',
     projectId: 'healthensure-4c0a8',
     storageBucket: 'healthensure-4c0a8.appspot.com',
-    iosClientId: '1018668404314-48kh91dqlr2vadsh960u960nr7akbo2n.apps.googleusercontent.com',
+    iosClientId:
+        '1018668404314-48kh91dqlr2vadsh960u960nr7akbo2n.apps.googleusercontent.com',
     iosBundleId: 'com.example.healthensure',
   );
 
@@ -76,7 +78,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1018668404314',
     projectId: 'healthensure-4c0a8',
     storageBucket: 'healthensure-4c0a8.appspot.com',
-    iosClientId: '1018668404314-48kh91dqlr2vadsh960u960nr7akbo2n.apps.googleusercontent.com',
+    iosClientId:
+        '1018668404314-48kh91dqlr2vadsh960u960nr7akbo2n.apps.googleusercontent.com',
     iosBundleId: 'com.example.healthensure',
   );
 }

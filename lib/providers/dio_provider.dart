@@ -1,15 +1,22 @@
+// to connect to database
+// to post/get data from laravel database
+// using Laravel Sanctum requires API token to get data, hence JWT authorization is used
+
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DioProvider {
-  //get token
+  // to get token
   Future<dynamic> getToken(String email, String password) async {
     try {
+      // url "http://127.0.0.1:8000/api/login" is local database
+      // api/login is the end point that will be set later in laravel
       var response = await Dio().post('http://127.0.0.1:8000/api/login',
           data: {'email': email, 'password': password});
 
+// if request set successfully, the return token
       if (response.statusCode == 200 && response.data != '') {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', response.data);
@@ -22,29 +29,14 @@ class DioProvider {
     }
   }
 
-  //get user data
+  // to get user data
   Future<dynamic> getUser(String token) async {
     try {
       var user = await Dio().get('http://127.0.0.1:8000/api/user',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
+      // if request set successfully, the return user data
       if (user.statusCode == 200 && user.data != '') {
         return json.encode(user.data);
-      }
-    } catch (error) {
-      return error;
-    }
-  }
-
-  //register new user
-  Future<dynamic> registerUser(
-      String username, String email, String password) async {
-    try {
-      var user = await Dio().post('http://127.0.0.1:8000/api/register',
-          data: {'name': username, 'email': email, 'password': password});
-      if (user.statusCode == 201 && user.data != '') {
-        return true;
-      } else {
-        return false;
       }
     } catch (error) {
       return error;
