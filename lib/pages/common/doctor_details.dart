@@ -17,6 +17,8 @@ class _DoctorDetailsState extends State<DoctorDetails> {
 
   @override
   Widget build(BuildContext context) {
+    // get arguments passed from doctor card (components/doctor_card)
+    final doctor = ModalRoute.of(context)!.settings.arguments as Map;
     return Scaffold(
         appBar: CustomAppBar(
           title: 'Doctor Details',
@@ -38,9 +40,13 @@ class _DoctorDetailsState extends State<DoctorDetails> {
         body: SafeArea(
           child: Column(
             children: <Widget>[
-              // display doc avatar and details
-              AboutDoctor(),
-              DetailContent(),
+              // pass doc details here
+              AboutDoctor(
+                doctor: doctor,
+              ),
+              DetailContent(
+                doctor: doctor,
+              ),
               Spacer(),
               Padding(
                   padding: EdgeInsets.all(20),
@@ -61,7 +67,9 @@ class _DoctorDetailsState extends State<DoctorDetails> {
 
 // build doctor avatar and intro
 class AboutDoctor extends StatelessWidget {
-  const AboutDoctor({super.key});
+  const AboutDoctor({Key? key, required this.doctor}) : super(key: key);
+
+  final Map<dynamic, dynamic> doctor;
 
   @override
   Widget build(BuildContext context) {
@@ -83,14 +91,15 @@ class AboutDoctor extends StatelessWidget {
           height: MediaQuery.of(context).size.height / 5.0,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/profile/Doctor2.png'),
+              image: NetworkImage(
+                  "http://127.0.0.1:8000${doctor['doctor_profile']}"),
               fit: BoxFit.contain,
             ),
           ),
         ),
         Config.mediumSpacingBox,
         Text(
-          "Dr Lisa Madison",
+          "Dr ${doctor['doctor_name']}",
           style: TextStyle(
             fontSize: 18,
             color: Colors.black,
@@ -133,26 +142,30 @@ class AboutDoctor extends StatelessWidget {
 }
 
 class DetailContent extends StatelessWidget {
-  const DetailContent({super.key});
+  const DetailContent({Key? key, required this.doctor}) : super(key: key);
+  final Map<dynamic, dynamic> doctor;
 
   @override
   Widget build(BuildContext context) {
     Config().init(context);
     return Container(
-      padding: EdgeInsets.all(18),
-      margin: EdgeInsets.only(bottom: 30),
+      padding: EdgeInsets.all(10),
+      //margin: EdgeInsets.only(bottom: 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Config.smallSpacingBox,
           // doc exp, patient and rating
-          DoctorInfo(),
+          DoctorInfo(
+            no_of_patients: doctor['patients_count'],
+            experience: doctor['experience'],
+          ),
           Config.mediumSpacingBox,
           Text('About Doc',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           Config.smallSpacingBox,
           Text(
-            'Dr Lisa Madison is an experienced Dentist at Penang. She is graduated since 2009, and have completed her training at Sabah General Hospital',
+            'Dr ${doctor['doctor_name']} is an experienced ${doctor['specialties']} Specialist in Penang. He/She is graduated since 2009, and have completed his/her training at Sabah General Hospital',
             style: TextStyle(
               fontWeight: FontWeight.w600,
               height: 1.5,
@@ -167,7 +180,11 @@ class DetailContent extends StatelessWidget {
 }
 
 class DoctorInfo extends StatelessWidget {
-  const DoctorInfo({super.key});
+  const DoctorInfo(
+      {super.key, required this.no_of_patients, required this.experience});
+
+  final int no_of_patients;
+  final int experience;
 
   @override
   Widget build(BuildContext context) {
@@ -175,12 +192,12 @@ class DoctorInfo extends StatelessWidget {
       children: <Widget>[
         InfoCard(
           label: 'Patient Count',
-          value: '160',
+          value: '$no_of_patients',
         ),
         SizedBox(width: 10),
         InfoCard(
           label: 'Experience',
-          value: '7 years',
+          value: '$experience years',
         ),
         SizedBox(width: 10),
         InfoCard(
@@ -208,7 +225,7 @@ class InfoCard extends StatelessWidget {
           color: Config.primaryColor,
         ),
         padding: EdgeInsets.symmetric(
-          vertical: 30,
+          vertical: 15,
           horizontal: 15,
         ),
         child: Column(

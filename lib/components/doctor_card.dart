@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:healthensure/pages/common/doctor_details.dart';
 
 import '../utils/config.dart';
 
 class DoctorCard extends StatelessWidget {
-  const DoctorCard({Key? key, required this.route}) : super(key: key);
+  const DoctorCard({Key? key, required this.route, required this.doctor})
+      : super(key: key);
 
   final String route;
+  final Map<String, dynamic> doctor; // tp retrieve doc details
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +25,9 @@ class DoctorCard extends StatelessWidget {
           child: Row(children: [
             SizedBox(
               width: Config.widthSize * 0.33,
-              child:
-                  Image.asset('assets/profile/Doctor2.png', fit: BoxFit.fill),
+              child: Image.network(
+                  "http://127.0.0.1:8000${doctor['doctor_profile']}",
+                  fit: BoxFit.fill),
             ),
             Flexible(
               child: Padding(
@@ -32,14 +36,14 @@ class DoctorCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'Dr Lisa Madison',
+                      "Dr ${doctor['doctor_name']}",
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      'Dental',
+                      "${doctor['specialties']}",
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
@@ -67,7 +71,7 @@ class DoctorCard extends StatelessWidget {
         ),
         onTap: () {
           // redirect to doc details page
-          Navigator.of(context).pushNamed(route);
+          Navigator.of(context).pushNamed(route, arguments: doctor);
         },
       ),
     );

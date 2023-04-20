@@ -4,6 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:healthensure/models/auth_model.dart';
+import 'package:healthensure/providers/dio_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:healthensure/components/button.dart';
+import 'package:healthensure/main.dart';
 
 import 'login_page.dart';
 
@@ -46,6 +51,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _ageController = TextEditingController();
+  // for laravel signup
+  final _nameController = TextEditingController();
   //final TextEditingController mobile = new TextEditingController();
   bool _isObscure = true;
   bool _isObscure2 = true;

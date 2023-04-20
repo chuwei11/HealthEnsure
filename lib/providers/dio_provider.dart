@@ -8,16 +8,33 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DioProvider {
-  // to get token
+//   // to get token
+//   Future<dynamic> getToken(String email, String password) async {
+//     try {
+//       // url "http://127.0.0.1:8000/api/login" is local database
+//       // api/login is the end point that will be set later in laravel
+//       var response = await Dio().post('http://127.0.0.1:8000/api/login',
+//           data: {'email': email, 'password': password});
+
+// // if request set successfully, the return token
+//       if (response.statusCode == 200 && response.data != '') {
+//         return response.data;
+//       }
+//     } catch (error) {
+//       return error;
+//     }
+//   }
+
   Future<dynamic> getToken(String email, String password) async {
     try {
       // url "http://127.0.0.1:8000/api/login" is local database
-      // api/login is the end point that will be set later in laravel
+
       var response = await Dio().post('http://127.0.0.1:8000/api/login',
           data: {'email': email, 'password': password});
 
 // if request set successfully, the return token
       if (response.statusCode == 200 && response.data != '') {
+        // store returned token into shared preferences to get other data later
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', response.data);
         return true;

@@ -5,11 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:healthensure/main_layout.dart';
 import 'package:healthensure/auth/register_page.dart';
 import 'package:healthensure/providers/dio_provider.dart';
+import 'package:provider/provider.dart';
 import '../pages/Admin_home_page.dart';
 import '../pages/agent_home_page.dart';
 import '../utils/config.dart';
 import 'forgot_pw_page.dart';
 import '../pages/patient_screens/patient_main_layout.dart';
+import 'package:healthensure/models/auth_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:healthensure/main.dart';
 
 class LoginPage extends StatefulWidget {
   // final VoidCallback showRegisterPage;
@@ -312,31 +316,35 @@ class _LoginPageState extends State<LoginPage> {
                       // //             color: Colors.white))),
 
                       //sign in button
-                      MaterialButton(
-                        color: Config.primaryColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20.0))),
-                        elevation: 5.0,
-                        height: 40,
-                        onPressed: () async {
-                          final token = await DioProvider().getToken(
-                              _emailController.text, _passwordController.text);
-                          setState(() {
-                            visible = true;
-                          });
-                          // try get token
-                          print(token);
-                          signIn(
-                              _emailController.text, _passwordController.text);
-                        },
-                        child: Text(
-                          "Login",
-                          style: TextStyle(
-                            fontSize: 20,
+                      Consumer<AuthModel>(builder: (context, auth, child) {
+                        return MaterialButton(
+                          color: Config.primaryColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20.0))),
+                          elevation: 5.0,
+                          height: 40,
+                          onPressed: () async {
+                            final token = await DioProvider().getToken(
+                                _emailController.text,
+                                _passwordController.text);
+                            if (token) {
+                              auth.loginSuccess(); //update login status
+                              signIn(_emailController.text,
+                                  _passwordController.text);
+                            }
+                            setState(() {
+                              visible = true;
+                            });
+                          },
+                          child: Text(
+                            "Login",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      }),
                       Config.smallSpacingBox,
 
                       //Register if not a member
