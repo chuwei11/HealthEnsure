@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:healthensure/components/button.dart';
 import 'package:healthensure/main.dart';
 
+import '../utils/config.dart';
 import 'login_page.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -486,7 +487,54 @@ class _RegisterPageState extends State<RegisterPage> {
                       SizedBox(
                         height: 10,
                       ),
+                      // sign up button
+                      Consumer<AuthModel>(builder: (context, auth, child) {
+                        return MaterialButton(
+                          color: Config.primaryColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20.0))),
+                          elevation: 5.0,
+                          height: 40,
+                          onPressed: () async {
+                            // register for laravel doc_app
+                            final userRegistration = await DioProvider()
+                                .registerUser(
+                                    _firstNameController.text,
+                                    _emailController.text,
+                                    _passwordController.text);
+                            // firebase signup
+                            signUp(_emailController.text,
+                                _passwordController.text, role);
 
+                            // if registration done, proceed to login
+                            if (userRegistration) {
+                              final token = await DioProvider().getToken(
+                                  _emailController.text,
+                                  _passwordController.text);
+
+                              if (token) {
+                                auth.loginSuccess(); //update login status
+                                //rediret to main page
+                                MyApp.navigatorKey.currentState!
+                                    .pushNamed('main');
+                              }
+                            } else {
+                              print(
+                                  'register not successful, please try again!');
+                            }
+                            setState(() {
+                              visible = true;
+                            });
+                          },
+                          child: Text(
+                            "Sign Up",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        );
+                      }),
                       // sign up button
                       // Padding(
                       //   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -525,35 +573,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       // ),
 
                       // Sign Up button
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          MaterialButton(
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20.0))),
-                            elevation: 5.0,
-                            height: 40,
-                            onPressed: () {
-                              setState(() {
-                                showProgress = true;
-                              });
-                              signUp(_emailController.text,
-                                  _passwordController.text, role);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Sign Up",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ),
-                            color: Colors.deepPurpleAccent,
-                          ),
-                        ],
-                      ),
+
                       SizedBox(height: 25),
 
                       // Login Button

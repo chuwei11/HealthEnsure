@@ -60,6 +60,22 @@ class DioProvider {
     }
   }
 
+  // to register user in laravel app & store in local database
+  Future<dynamic> registerUser(
+      String username, String email, String password) async {
+    try {
+      var user = await Dio().post('http://127.0.0.1:8000/api/register',
+          data: {'name': username, 'email': email, 'password': password});
+      if (user.statusCode == 201 && user.data != '') {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      return error;
+    }
+  }
+
   //store booking details
   Future<dynamic> bookAppointment(
       String date, String day, String time, int doctor, String token) async {

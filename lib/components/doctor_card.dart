@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:healthensure/pages/common/doctor_details.dart';
+import 'package:healthensure/pages/patient_screens/doctor_details.dart';
 
 import '../utils/config.dart';
 

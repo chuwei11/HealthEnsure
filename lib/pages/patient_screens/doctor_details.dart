@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:healthensure/components/custom_appbar.dart';
@@ -225,7 +226,7 @@ class InfoCard extends StatelessWidget {
           color: Config.primaryColor,
         ),
         padding: EdgeInsets.symmetric(
-          vertical: 15,
+          vertical: 11.5,
           horizontal: 15,
         ),
         child: Column(

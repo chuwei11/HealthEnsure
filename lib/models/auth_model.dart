@@ -48,19 +48,19 @@ class AuthModel extends ChangeNotifier {
   }
 
 //when login success, update the status
-//   void loginSuccess(
-//       Map<String, dynamic> userData, Map<String, dynamic> appointmentInfo) {
-//     _isLogin = true;
+  // void loginSuccess(
+  //     Map<String, dynamic> userData, Map<String, dynamic> appointmentInfo) {
+  //   _isLogin = true;
 
-//     //update all these data when login
-//     user = userData;
-//     appointment = appointmentInfo;
-//     if (user['details']['fav'] != null) {
-//       _fav = json.decode(user['details']['fav']);
-//     }
+  //   //update all these data when login
+  //   user = userData;
+  //   appointment = appointmentInfo;
+  //   if (user['details']['fav'] != null) {
+  //     _fav = json.decode(user['details']['fav']);
+  //   }
 
-//     notifyListeners();
-//   }
+  //   notifyListeners();
+  // }
 
   void loginSuccess() {
     _isLogin = true;

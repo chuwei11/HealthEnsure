@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:healthensure/auth/login_page.dart';
 import 'package:healthensure/models/auth_model.dart';
-import 'package:healthensure/pages/common/doctor_details.dart';
+import 'package:healthensure/pages/patient_screens/doctor_details.dart';
 import 'package:healthensure/pages/patient_screens/booking_page.dart';
 import 'package:healthensure/pages/patient_screens/booking_success.dart';
 import 'package:healthensure/pages/patient_screens/patient_main_layout.dart';
