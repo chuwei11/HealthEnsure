@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:healthensure/components/custom_appbar.dart';
@@ -55,8 +54,9 @@ class _DoctorDetailsState extends State<DoctorDetails> {
                     width: double.infinity,
                     disabled: false,
                     onPressed: () {
-                      // navigate to booking page
-                      Navigator.of(context).pushNamed('booking_page');
+                      // pass doc id for booking process
+                      Navigator.of(context).pushNamed('booking_page',
+                          arguments: {"doctor_id": doctor['doc_id']});
                     },
                     title: 'Book Appointment',
                   ))
