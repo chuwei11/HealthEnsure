@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:healthensure/utils/config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:healthensure/providers/dio_provider.dart';
+import 'dart:convert';
 
 class PatientAppointmentPage extends StatefulWidget {
   const PatientAppointmentPage({super.key});
@@ -15,49 +18,43 @@ class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
   // set initial status as 'upcoming'
   AppointmentStatus status = AppointmentStatus.upcoming;
   Alignment _alignment = Alignment.centerLeft;
-  List<dynamic> schedules = [
-    {
-      "doc_name": "Lisa Madison",
-      "doc_profile": "assets/profile/Doctor2.png",
-      "specialization": "Dentistry",
-      "status": AppointmentStatus.complete,
-    },
-    {
-      "doc_name": "Johnson Tan",
-      "doc_profile": "assets/profile/Doctor3.png",
-      "specialization": "Cardiology",
-      "status": AppointmentStatus.cancelled,
-    },
-    {
-      "doc_name": "Ageline Lim",
-      "doc_profile": "assets/profile/Doctor4.png",
-      "specialization": "Psychiatry",
-      "status": AppointmentStatus.cancelled,
-    },
-    {
-      "doc_name": "Brandon Chen",
-      "doc_profile": "assets/profile/Doctor5.png",
-      "specialization": "Gynecology",
-      "status": AppointmentStatus.upcoming,
-    },
-  ];
+  List<dynamic> schedules = [];
+
+  // get appointment details after booking is done
+  Future<void> getAppointments() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    final appointment = await DioProvider().getAppointments(token);
+    if (appointment != 'Unable to get Response!') {
+      setState(() {
+        schedules = json.decode(appointment);
+        print(schedules);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    getAppointments();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     //return filtered appointment
     // schedule info
     List<dynamic> filteredSchedule = schedules.where((var schedule) {
-      // switch (schedule['status']) {
-      //   case 'upcoming':
-      //     schedule['status'] = AppointmentStatus.upcoming;
-      //     break;
-      //   case 'complete':
-      //     schedule['status'] = AppointmentStatus.complete;
-      //     break;
-      //   case 'cancelled':
-      //     schedule['status'] = AppointmentStatus.cancelled;
-      //     break;
-      // }
+      switch (schedule['status']) {
+        case 'upcoming':
+          schedule['status'] = AppointmentStatus.upcoming;
+          break;
+        case 'complete':
+          schedule['status'] = AppointmentStatus.complete;
+          break;
+        case 'cancelled':
+          schedule['status'] = AppointmentStatus.cancelled;
+          break;
+      }
       return schedule['status'] == status;
     }).toList();
 
@@ -141,7 +138,7 @@ class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
             child: ListView.builder(
                 itemCount: filteredSchedule.length,
                 itemBuilder: (context, index) {
-                  var _schedule = filteredSchedule[index];
+                  var schedule = filteredSchedule[index];
                   bool isLastElem = filteredSchedule.length + 1 == index;
                   return Card(
                     shape: RoundedRectangleBorder(
@@ -161,21 +158,21 @@ class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
                             Row(
                               children: [
                                 CircleAvatar(
-                                  backgroundImage:
-                                      AssetImage(_schedule['doc_profile']),
+                                  backgroundImage: NetworkImage(
+                                      "http://127.0.0.1:8000${schedule['doctor_profile']}"),
                                 ),
                                 SizedBox(width: 5),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(_schedule['doc_name'],
+                                    Text(schedule['doctor_name'],
                                         style: TextStyle(
                                           fontSize: 16,
                                           //color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         )),
                                     SizedBox(height: 5),
-                                    Text(_schedule['specialization'],
+                                    Text(schedule['specialties'],
                                         style: TextStyle(
                                           color: Colors.grey,
                                           fontSize: 14,
@@ -187,7 +184,11 @@ class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
                             ),
                             Config.smallSpacingBox,
                             // Schedule Card
-                            ScheduleCard(),
+                            ScheduleCard(
+                              date: schedule['date'],
+                              day: schedule['day'],
+                              time: schedule['time'],
+                            ),
                             Config.smallSpacingBox,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -195,7 +196,7 @@ class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
                                 Expanded(
                                   child: OutlinedButton(
                                     onPressed: () {},
-                                    child: Text('Cancel',
+                                    child: Text('Cancelled',
                                         style: TextStyle(
                                             color: Config.secondaryColor)),
                                   ),
@@ -225,14 +226,13 @@ class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
 }
 
 // Schedule Widget
-class ScheduleCard extends StatefulWidget {
-  const ScheduleCard({super.key});
+class ScheduleCard extends StatelessWidget {
+  const ScheduleCard(
+      {super.key, required this.date, required this.day, required this.time});
+  final String time;
+  final String date;
+  final String day;
 
-  @override
-  State<ScheduleCard> createState() => _ScheduleCardState();
-}
-
-class _ScheduleCardState extends State<ScheduleCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -245,23 +245,22 @@ class _ScheduleCardState extends State<ScheduleCard> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const <Widget>[
-          Icon(
+        children: <Widget>[
+          const Icon(
             Icons.calendar_month_sharp,
             color: Colors.white,
             size: 15,
           ),
-          SizedBox(width: 5),
-          Text('Monday, 11/28/2022', style: TextStyle(color: Colors.white)),
-          SizedBox(width: 20),
-          Icon(
+          const SizedBox(width: 5),
+          Text('$day, $date', style: TextStyle(color: Colors.white)),
+          const SizedBox(width: 20),
+          const Icon(
             Icons.access_alarm,
             color: Colors.white,
             size: 17,
           ),
-          SizedBox(width: 5),
-          Flexible(
-              child: Text('11.00AM', style: TextStyle(color: Colors.white)))
+          const SizedBox(width: 5),
+          Flexible(child: Text(time, style: TextStyle(color: Colors.white)))
         ],
       ),
     );

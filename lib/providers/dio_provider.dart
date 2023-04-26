@@ -100,10 +100,11 @@ class DioProvider {
       var response = await Dio().get('http://127.0.0.1:8000/api/appointments',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
 
+// return error if the response is empty
       if (response.statusCode == 200 && response.data != '') {
         return json.encode(response.data);
       } else {
-        return 'Error';
+        return 'Unable to get Response!';
       }
     } catch (error) {
       return error;
