@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:healthensure/utils/config.dart';
 import 'package:healthensure/main.dart';
 import 'package:healthensure/providers/dio_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -86,11 +85,60 @@ class _AppointmentCardState extends State<AppointmentCard> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.greenAccent,
                         ),
-                        child: const Text(
+                        child: Text(
                           'Completed',
                           style: TextStyle(color: Colors.white),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return RatingDialog(
+                                    initialRating: 1.0,
+                                    title: Text('Rate this Doctor',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.w800)),
+                                    // app's logo
+                                    image: const FlutterLogo(
+                                      //'assets/icon/logo.png',
+                                      size: 80,
+                                    ), //const FlutterLogo(size: 100),
+                                    message: Text(
+                                      'Please rate our doctor based on your experience',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 13),
+                                    ),
+                                    submitButtonText: "Submit",
+                                    commentHint: "Type your reviews...",
+                                    onSubmitted: (response) async {
+                                      final SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      final token =
+                                          prefs.getString('token') ?? '';
+
+                                      // The token is used to authenticate the user's request when
+                                      // they submit a review using the DioProvider.storeReviews() method.
+                                      final rating = await DioProvider()
+                                          .storeReviews(
+                                              response.comment,
+                                              response.rating,
+                                              // appointment id
+                                              widget.doctor['appointments']
+                                                  ['id'],
+                                              // doctor id
+                                              widget.doctor['doc_id'],
+                                              token);
+
+                                      // once review submitted successfully, refresh the patient main page
+                                      if (rating == 200 && rating != '') {
+                                        MyApp.navigatorKey.currentState!
+                                            .pushNamed('patientMain');
+                                      }
+                                    });
+                              });
+                        },
                       ),
                     ),
                   ],
