@@ -74,7 +74,15 @@ class PatientHomePageState extends State<PatientHomePage> {
         setState(() {
           //decode to json
           user1 = json.decode(response);
-          print(user1);
+
+          // check for today's appointment
+          for (var doctorData in user1['doctor']) {
+            // if today's appointment exists
+            // retrieve the relevant doc info
+            if (doctorData['appointments'] != null) {
+              doctor = doctorData;
+            }
+          }
         });
       }
     }
@@ -352,7 +360,32 @@ class PatientHomePageState extends State<PatientHomePage> {
                               fontSize: 16, fontWeight: FontWeight.w500),
                         ),
                         Config.smallSpacingBox,
-                        AppointmentCard(),
+                        // passing appointment details here
+                        doctor.isNotEmpty
+                            ? AppointmentCard(
+                                doctor: doctor, color: Config.primaryColor)
+                            : Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade300,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: Text(
+                                      '-- No Appointment For Today --',
+                                      style: TextStyle(
+                                        decorationThickness: 1.5,
+                                        letterSpacing: 2,
+                                        wordSpacing: 5,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                         Config.smallSpacingBox,
                         Text(
                           'Recommended Doctors',
