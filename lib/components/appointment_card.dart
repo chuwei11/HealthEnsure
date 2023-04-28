@@ -130,11 +130,13 @@ class _AppointmentCardState extends State<AppointmentCard> {
                                               // doctor id
                                               widget.doctor['doc_id'],
                                               token);
-
+                                      print(rating);
                                       // once review submitted successfully, refresh the patient main page
                                       if (rating == 200 && rating != '') {
-                                        MyApp.navigatorKey.currentState!
+                                        Navigator.of(context)
                                             .pushNamed('patientMain');
+                                        // MyApp.navigatorKey.currentState!
+                                        //     .pushNamed('patientMain');
                                       }
                                     });
                               });
