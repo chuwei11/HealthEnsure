@@ -196,7 +196,7 @@ class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
                                 Expanded(
                                   child: OutlinedButton(
                                     onPressed: () {},
-                                    child: Text('Cancelled',
+                                    child: Text('Cancel',
                                         style: TextStyle(
                                             color: Config.secondaryColor)),
                                   ),

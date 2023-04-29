@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:healthensure/pages/patient_screens/fav_doc_page.dart';
+import 'package:healthensure/pages/patient_screens/insurance_claims.dart';
 import 'package:healthensure/pages/patient_screens/patient_appointment_page.dart';
 import 'package:healthensure/pages/patient_screens/patient_home_page.dart';
+import 'package:healthensure/pages/patient_screens/profile_page.dart';
+import 'package:healthensure/utils/config.dart';
 
 class PatientMainLayout extends StatefulWidget {
   const PatientMainLayout({Key? key}) : super(key: key);
@@ -15,8 +19,11 @@ class _PatientMainLayoutState extends State<PatientMainLayout> {
   final PageController _pageController = PageController();
 
   List<Widget> _pageOptions = [
-    PatientHomePage(),
-    PatientAppointmentPage(),
+    const PatientHomePage(),
+    FavPage(),
+    const PatientAppointmentPage(),
+    InsuranceClaimsPage(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -51,11 +58,27 @@ class _PatientMainLayoutState extends State<PatientMainLayout> {
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.houseChimneyMedical),
             label: 'Home',
-            backgroundColor: Colors.purpleAccent,
+            backgroundColor: Config.primaryColor,
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.solidHeart),
+            label: 'Favourite',
+            backgroundColor: Config.primaryColor,
           ),
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.solidCalendarCheck),
             label: 'Appointments',
+            backgroundColor: Config.primaryColor,
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.fileContract),
+            label: 'Insurance',
+            backgroundColor: Config.primaryColor,
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.solidUser),
+            label: 'Profile',
+            backgroundColor: Config.primaryColor,
           ),
         ],
       ),
