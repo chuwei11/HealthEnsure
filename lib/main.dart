@@ -46,7 +46,10 @@ class MyApp extends StatelessWidget {
           //'/': (context) => const LoginPage(),
           'patientMain': (context) => const PatientMainLayout(),
           'booking_page': (context) => const BookingPage(),
-          'docDetails': (context) => const DoctorDetails(),
+          // 'docDetails': (context) => DoctorDetails(
+          //       isFav: false,
+          //       doctor: {},
+          //     ),
           'succBooked': (context) => const AppointmentBooked(),
         },
       ),

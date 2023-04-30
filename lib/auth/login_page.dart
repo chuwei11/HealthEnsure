@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -329,7 +331,34 @@ class _LoginPageState extends State<LoginPage> {
                                 _emailController.text,
                                 _passwordController.text);
                             if (token) {
-                              auth.loginSuccess(); //update login status
+                              //auth.loginSuccess(); //update login status
+                              final SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              final tokenValue = prefs.getString('token') ?? '';
+
+                              if (tokenValue.isNotEmpty && tokenValue != '') {
+                                //get user data
+                                final response =
+                                    await DioProvider().getUser(tokenValue);
+                                if (response != null) {
+                                  setState(() {
+                                    //decode to json
+                                    Map<String, dynamic> appointment = {};
+                                    final user1 = json.decode(response);
+
+                                    // check for today's appointment
+                                    for (var doctorData in user1['doctor']) {
+                                      // if today's appointment exists
+                                      // retrieve the relevant doc info
+                                      if (doctorData['appointments'] != null) {
+                                        appointment = doctorData;
+                                      }
+                                    }
+
+                                    auth.loginSuccess(user1, appointment);
+                                  });
+                                }
+                              }
                               signIn(_emailController.text,
                                   _passwordController.text);
                             }

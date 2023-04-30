@@ -134,7 +134,8 @@ class DioProvider {
     }
   }
 
-  //store fav doctor
+  // store favourite doctor
+  // update the fav list into local database
   Future<dynamic> storeFavDoc(String token, List<dynamic> favList) async {
     try {
       var response = await Dio().post('http://127.0.0.1:8000/api/fav',

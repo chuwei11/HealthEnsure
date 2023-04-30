@@ -514,8 +514,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   _passwordController.text);
 
                               if (token) {
-                                auth.loginSuccess(); //update login status
-                                //rediret to main page
+                                auth.loginSuccess({}, {}); //update login status
+                                //redirect to main page
                                 MyApp.navigatorKey.currentState!
                                     .pushNamed('main');
                               }

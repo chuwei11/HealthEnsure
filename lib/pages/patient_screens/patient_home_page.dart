@@ -5,7 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:healthensure/components/appointment_card.dart';
 import 'package:healthensure/components/doctor_card.dart';
+import 'package:healthensure/models/auth_model.dart';
 import 'package:healthensure/providers/dio_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../auth/login_page.dart';
@@ -62,44 +64,44 @@ class PatientHomePageState extends State<PatientHomePage> {
     },
   ];
 
-  Future<void> getData() async {
-    // get toekn from share preferences
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token') ?? '';
+  // Future<void> getData() async {
+  //   // get toekn from share preferences
+  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   final token = prefs.getString('token') ?? '';
 
-    if (token.isNotEmpty && token != '') {
-      //get user data
-      final response = await DioProvider().getUser(token);
-      if (response != null) {
-        setState(() {
-          //decode to json
-          user1 = json.decode(response);
+  //   if (token.isNotEmpty && token != '') {
+  //     //get user data
+  //     final response = await DioProvider().getUser(token);
+  //     if (response != null) {
+  //       setState(() {
+  //         //decode to json
+  //         user1 = json.decode(response);
 
-          // check for today's appointment
-          for (var doctorData in user1['doctor']) {
-            // if today's appointment exists
-            // retrieve the relevant doc info
-            if (doctorData['appointments'] != null) {
-              doctor = doctorData;
-            }
-          }
-        });
-      }
-    }
-  }
+  //         // check for today's appointment
+  //         for (var doctorData in user1['doctor']) {
+  //           // if today's appointment exists
+  //           // retrieve the relevant doc info
+  //           if (doctorData['appointments'] != null) {
+  //             doctor = doctorData;
+  //           }
+  //         }
+  //       });
+  //     }
+  //   }
+  // }
 
-  @override
-  void initState() {
-    getData();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   getData();
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
     Config().init(context);
-    // user = Provider.of<AuthModel>(context, listen: false).getUser;
-    // doctor = Provider.of<AuthModel>(context, listen: false).getAppointment;
-    // favList = Provider.of<AuthModel>(context, listen: false).getFav;
+    user1 = Provider.of<AuthModel>(context, listen: false).getUser;
+    doctor = Provider.of<AuthModel>(context, listen: false).getAppointment;
+    favList = Provider.of<AuthModel>(context, listen: false).getFav;
 
     return Scaffold(
         //   //if user is empty, then return progress indicator
@@ -399,8 +401,12 @@ class PatientHomePageState extends State<PatientHomePage> {
                           children:
                               List.generate(user1['doctor'].length, (index) {
                             return DoctorCard(
-                              route: 'docDetails',
+                              //route: 'docDetails',
                               doctor: user1['doctor'][index],
+                              isFav: favList.contains(
+                                      user1['doctor'][index]['doc_id'])
+                                  ? true
+                                  : false,
                             );
                           }),
                         )
