@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:healthensure/main_layout.dart';
 import 'package:healthensure/auth/register_page.dart';
 import 'package:healthensure/providers/dio_provider.dart';
 import 'package:provider/provider.dart';
@@ -331,13 +330,16 @@ class _LoginPageState extends State<LoginPage> {
                                 _emailController.text,
                                 _passwordController.text);
                             if (token) {
-                              //auth.loginSuccess(); //update login status
+                              //auth.loginSuccess();
+                              ////update login status
                               final SharedPreferences prefs =
                                   await SharedPreferences.getInstance();
+                              // if token retrieved succesfully, retrieves
+                              // the token from local storage using Shared Pref
                               final tokenValue = prefs.getString('token') ?? '';
 
                               if (tokenValue.isNotEmpty && tokenValue != '') {
-                                //get user data
+                                //retrieve user data from the API using the token
                                 final response =
                                     await DioProvider().getUser(tokenValue);
                                 if (response != null) {
@@ -346,7 +348,7 @@ class _LoginPageState extends State<LoginPage> {
                                     Map<String, dynamic> appointment = {};
                                     final user1 = json.decode(response);
 
-                                    // check for today's appointment
+                                    // looks for today's appointment
                                     for (var doctorData in user1['doctor']) {
                                       // if today's appointment exists
                                       // retrieve the relevant doc info
@@ -354,13 +356,16 @@ class _LoginPageState extends State<LoginPage> {
                                         appointment = doctorData;
                                       }
                                     }
-
                                     auth.loginSuccess(user1, appointment);
+                                    // firebase auth
+                                    // login & redirect to main page
+                                    signIn(_emailController.text,
+                                        _passwordController.text);
                                   });
                                 }
                               }
-                              signIn(_emailController.text,
-                                  _passwordController.text);
+                              // signIn(_emailController.text,
+                              //     _passwordController.text);
                             }
                             setState(() {
                               visible = true;

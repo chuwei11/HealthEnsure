@@ -8,7 +8,6 @@ import 'package:healthensure/pages/patient_screens/booking_success.dart';
 import 'package:healthensure/pages/patient_screens/patient_main_layout.dart';
 import 'package:healthensure/auth/register_page.dart';
 import 'firebase_options.dart';
-import 'main_layout.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -44,6 +43,7 @@ class MyApp extends StatelessWidget {
         //initialRoute: '/',
         routes: {
           //'/': (context) => const LoginPage(),
+          'login_page': (context) => LoginPage(),
           'patientMain': (context) => const PatientMainLayout(),
           'booking_page': (context) => const BookingPage(),
           // 'docDetails': (context) => DoctorDetails(

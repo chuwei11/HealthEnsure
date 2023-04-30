@@ -64,38 +64,6 @@ class PatientHomePageState extends State<PatientHomePage> {
     },
   ];
 
-  // Future<void> getData() async {
-  //   // get toekn from share preferences
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final token = prefs.getString('token') ?? '';
-
-  //   if (token.isNotEmpty && token != '') {
-  //     //get user data
-  //     final response = await DioProvider().getUser(token);
-  //     if (response != null) {
-  //       setState(() {
-  //         //decode to json
-  //         user1 = json.decode(response);
-
-  //         // check for today's appointment
-  //         for (var doctorData in user1['doctor']) {
-  //           // if today's appointment exists
-  //           // retrieve the relevant doc info
-  //           if (doctorData['appointments'] != null) {
-  //             doctor = doctorData;
-  //           }
-  //         }
-  //       });
-  //     }
-  //   }
-  // }
-
-  // @override
-  // void initState() {
-  //   getData();
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     Config().init(context);
@@ -104,163 +72,6 @@ class PatientHomePageState extends State<PatientHomePage> {
     favList = Provider.of<AuthModel>(context, listen: false).getFav;
 
     return Scaffold(
-        //   //if user is empty, then return progress indicator
-        //   body: user.isEmpty
-        //       ? const Center(
-        //           child: CircularProgressIndicator(),
-        //         )
-        //       : Padding(
-        //           padding: const EdgeInsets.symmetric(
-        //             horizontal: 15,
-        //             vertical: 15,
-        //           ),
-        //           child: SafeArea(
-        //             child: SingleChildScrollView(
-        //               child: Column(
-        //                 mainAxisAlignment: MainAxisAlignment.start,
-        //                 crossAxisAlignment: CrossAxisAlignment.start,
-        //                 children: <Widget>[
-        //                   Row(
-        //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //                     children: <Widget>[
-        //                       Text(
-        //                         user['name'],
-        //                         style: const TextStyle(
-        //                           fontSize: 24,
-        //                           fontWeight: FontWeight.bold,
-        //                         ),
-        //                       ),
-        //                       const SizedBox(
-        //                         child: CircleAvatar(
-        //                           radius: 30,
-        //                           backgroundImage:
-        //                               AssetImage('assets/profile1.jpg'),
-        //                         ),
-        //                       )
-        //                     ],
-        //                   ),
-        //                   Config.spaceMedium,
-        //                   const Text(
-        //                     'Specialization',
-        //                     style: TextStyle(
-        //                       fontSize: 16,
-        //                       fontWeight: FontWeight.bold,
-        //                     ),
-        //                   ),
-        //                   Config.spaceSmall,
-        //                   SizedBox(
-        //                     height: Config.heightSize * 0.05,
-        //                     child: ListView(
-        //                       scrollDirection: Axis.horizontal,
-        //                       children:
-        //                           List<Widget>.generate(medCat.length, (index) {
-        //                         return Card(
-        //                           margin: const EdgeInsets.only(right: 20),
-        //                           color: Config.primaryColor,
-        //                           child: Padding(
-        //                             padding: const EdgeInsets.symmetric(
-        //                                 horizontal: 15, vertical: 10),
-        //                             child: Row(
-        //                               mainAxisAlignment:
-        //                                   MainAxisAlignment.spaceAround,
-        //                               children: <Widget>[
-        //                                 FaIcon(
-        //                                   medCat[index]['icon'],
-        //                                   color: Colors.white,
-        //                                 ),
-        //                                 const SizedBox(
-        //                                   width: 20,
-        //                                 ),
-        //                                 Text(
-        //                                   medCat[index]['specialty'],
-        //                                   style: const TextStyle(
-        //                                     fontSize: 16,
-        //                                     color: Colors.white,
-        //                                   ),
-        //                                 ),
-        //                               ],
-        //                             ),
-        //                           ),
-        //                         );
-        //                       }),
-        //                     ),
-        //                   ),
-        //                   Config.spaceSmall,
-        //                   const Text(
-        //                     'Appointment Today',
-        //                     style: TextStyle(
-        //                       fontSize: 16,
-        //                       fontWeight: FontWeight.bold,
-        //                     ),
-        //                   ),
-        //                   Config.spaceSmall,
-        //                   doctor.isNotEmpty
-        //                       ? AppointmentCard(
-        //                           doctor: doctor,
-        //                           color: Config.primaryColor,
-        //                         )
-        //                       : Container(
-        //                           width: double.infinity,
-        //                           decoration: BoxDecoration(
-        //                             color: Colors.grey.shade300,
-        //                             borderRadius: BorderRadius.circular(10),
-        //                           ),
-        //                           child: const Center(
-        //                             child: Padding(
-        //                               padding: EdgeInsets.all(20),
-        //                               child: Text(
-        //                                 'No Appointment Today',
-        //                                 style: TextStyle(
-        //                                   fontSize: 16,
-        //                                   fontWeight: FontWeight.w600,
-        //                                 ),
-        //                               ),
-        //                             ),
-        //                           ),
-        //                         ),
-        //                   Config.spaceSmall,
-        //                   const Text(
-        //                     'Top Doctors',
-        //                     style: TextStyle(
-        //                       fontSize: 16,
-        //                       fontWeight: FontWeight.bold,
-        //                     ),
-        //                   ),
-        //                   Config.spaceSmall,
-        //                   Column(
-        //                     children: List.generate(user['doctor'].length, (index) {
-        //                       return DoctorCard(
-        //                         doctor: user['doctor'][index],
-        //                         //if lates fav list contains particular doctor id, then show fav icon
-        //                         isFav: favList
-        //                                 .contains(user['doctor'][index]['doc_id'])
-        //                             ? true
-        //                             : false,
-        //                       );
-        //                     }),
-        //                   ),
-        //                 ],
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        // );
-
-        //*implementation */
-        //     body: Center(
-        //         child: Column(
-        //   mainAxisAlignment: MainAxisAlignment.end,
-        //   children: [
-        //     Text('signed in as: ' + user.email!),
-        //     MaterialButton(
-        //       onPressed: () {
-        //         FirebaseAuth.instance.signOut();
-        //       },
-        //       color: Colors.deepPurpleAccent[200],
-        //       child: Text('Sign Out'),
-        //     )
-        //   ],
-        // ));
         body: user1.isEmpty
             ? Center(
                 // if user is empty, return progress indicator instead
@@ -287,7 +98,32 @@ class PatientHomePageState extends State<PatientHomePage> {
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             MaterialButton(
-                              onPressed: () => _logout(context),
+                              onPressed: () async {
+                                // retrieve instance of SharedPref and gets token value
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                final token = prefs.getString('token') ?? '';
+
+                                // if token found
+                                if (token.isNotEmpty && token != '') {
+                                  // sends logout request to server
+                                  final response =
+                                      await DioProvider().logout(token);
+
+                                  if (response == 200) {
+                                    //once deleted the access token
+                                    //remove token saved at Shared Preference too
+                                    await prefs.remove('token');
+                                    setState(() {
+                                      //redirect to login page
+                                      // MaterialPageRoute(
+                                      //     builder: (context) => LoginPage());
+                                    });
+                                  }
+                                  ;
+                                  _logout(context);
+                                }
+                              },
                               color: Colors.deepPurpleAccent[200],
                               child: Text('Logout'),
                               height: 30,
@@ -415,4 +251,35 @@ class PatientHomePageState extends State<PatientHomePage> {
                   ),
                 )));
   }
+  // Future<void> getData() async {
+  //   // get toekn from share preferences
+  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   final token = prefs.getString('token') ?? '';
+
+  //   if (token.isNotEmpty && token != '') {
+  //     //get user data
+  //     final response = await DioProvider().getUser(token);
+  //     if (response != null) {
+  //       setState(() {
+  //         //decode to json
+  //         user1 = json.decode(response);
+
+  //         // check for today's appointment
+  //         for (var doctorData in user1['doctor']) {
+  //           // if today's appointment exists
+  //           // retrieve the relevant doc info
+  //           if (doctorData['appointments'] != null) {
+  //             doctor = doctorData;
+  //           }
+  //         }
+  //       });
+  //     }
+  //   }
+  // }
+
+  // @override
+  // void initState() {
+  //   getData();
+  //   super.initState();
+  // }
 }

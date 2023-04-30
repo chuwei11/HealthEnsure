@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import "package:healthensure/main.dart";
 import "package:healthensure/utils/config.dart";
 import "package:shared_preferences/shared_preferences.dart";
+import 'package:firebase_auth/firebase_auth.dart';
 
+import "../../auth/login_page.dart";
 import "../../providers/dio_provider.dart";
 
 class ProfilePage extends StatefulWidget {
@@ -133,40 +134,42 @@ class _ProfilePageState extends State<ProfilePage> {
                           children: [
                             Icon(
                               Icons.logout_outlined,
-                              color: Colors.lightGreen[400],
-                              size: 35,
+                              color: Colors.lightGreen[500],
+                              size: 36,
                             ),
-                            const SizedBox(
-                              width: 20,
-                            ),
+                            Config.mediumSpacingBox,
                             TextButton(
                               onPressed: () async {
-                                // final SharedPreferences prefs =
-                                //     await SharedPreferences.getInstance();
-                                // final token = prefs.getString('token') ?? '';
+                                // retrieve instance of SharedPref and gets token value
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                final token = prefs.getString('token') ?? '';
 
-                                // if (token.isNotEmpty && token != '') {
-                                //   //logout here
-                                //   final response =
-                                //       await DioProvider().logout(token);
+                                // if token found
+                                if (token.isNotEmpty && token != '') {
+                                  // sends logout request to server
+                                  final response =
+                                      await DioProvider().logout(token);
 
-                                //   if (response == 200) {
-                                //     //if successfully delete access token
-                                //     //then delete token saved at Shared Preference as well
-                                //     await prefs.remove('token');
-                                //     setState(() {
-                                //       //redirect to login page
-                                //       MyApp.navigatorKey.currentState!
-                                //           .pushReplacementNamed('/');
-                                //     });
-                                //   }
-                                // }
+                                  if (response == 200) {
+                                    //once deleted the access token
+                                    //remove token saved at Shared Preference too
+                                    await prefs.remove('token');
+                                    setState(() {
+                                      //redirect to login page
+                                      // MaterialPageRoute(
+                                      //     builder: (context) => LoginPage());
+                                    });
+                                  }
+                                  ;
+                                  _logout(context);
+                                }
                               },
                               child: const Text(
                                 "Logout",
                                 style: TextStyle(
                                   color: Config.primaryColor,
-                                  fontSize: 15,
+                                  fontSize: 16,
                                 ),
                               ),
                             ),
@@ -181,6 +184,14 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ],
+    );
+  }
+
+  void _logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
     );
   }
 }
