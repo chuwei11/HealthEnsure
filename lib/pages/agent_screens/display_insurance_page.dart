@@ -10,6 +10,8 @@ class _InsuranceDisplayState extends State<InsuranceDisplay> {
   CollectionReference _dataCollection =
       FirebaseFirestore.instance.collection('collection_name');
 
+  List<String> options = ['All Requests', 'Accepted', 'Rejected'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +35,9 @@ class _InsuranceDisplayState extends State<InsuranceDisplay> {
                   document.data()! as Map<String, dynamic>;
               return ListTile(
                 title: Text(data['insurance']),
-                subtitle: Text(data['insuranceCompany']),
+                subtitle: Text(data['insuranceCompany'] +
+                    'status:' +
+                    data['insuranceCompany']),
               );
             }).toList(),
           );

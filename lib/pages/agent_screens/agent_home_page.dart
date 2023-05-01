@@ -1,65 +1,120 @@
+import 'package:chips_choice/chips_choice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:healthensure/pages/patient_screens/insurance_claims.dart';
+import 'package:quickalert/quickalert.dart';
 import '../../auth/login_page.dart';
+import '../../auth/services/insurance_services.dart';
+import '../../providers/insurance_provider.dart';
+import 'package:provider/provider.dart';
 
 class Agent extends StatefulWidget {
-  const Agent({super.key});
+  const Agent({Key? key}) : super(key: key);
 
   @override
   State<Agent> createState() => _AgentState();
 }
 
 class _AgentState extends State<Agent> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Insurance Requests"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              logout(context);
-            },
-            icon: Icon(
-              Icons.logout,
-            ),
-          )
-        ],
-      ),
-      body: StreamBuilder(
-        // return streams of list insurance application form
-        stream: readInsurance(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Something went wrong! ${snapshot.error}');
-          } else if (snapshot.hasData) {
-            final insurance = snapshot.data!;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-            return ListView(
-              children: insurance.map(buildInsurance).toList(),
-            );
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-    );
+  User? user = FirebaseAuth.instance.currentUser;
+  String selectedStatus = 'pending';
+  List<DocumentSnapshot> insuranceData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchInsuranceData();
   }
 
-  Widget buildInsurance(InsuranceForm form) => ListTile(
-        leading: CircleAvatar(child: Text('${form.insuranceId}')),
-        title: Text(form.company),
-        subtitle: Text(form.name),
-      );
+  void fetchInsuranceData() async {
+    QuerySnapshot querySnapshot = await firestore.collection('insurance').get();
+    setState(() {
+      insuranceData = querySnapshot.docs;
+    });
+  }
 
-  Stream<List<InsuranceForm>> readInsurance() => FirebaseFirestore.instance
-      .collection('insurance')
-      .snapshots()
-      .map((snapshot) => snapshot.docs
-          .map((doc) => InsuranceForm.fromJson(doc.data()))
-          .toList());
+  void updateInsuranceStatus(String docId, String newStatus) async {
+    await firestore
+        .collection('insurance')
+        .doc(docId)
+        .update({'status': newStatus});
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Insurance status updated.'),
+    ));
+    fetchInsuranceData();
+  }
+
+  void showAlert(QuickAlertType quickAlertType) {
+    QuickAlert.show(context: context, type: quickAlertType);
+  }
+
+  List<Widget> buildInsuranceList() {
+    return insuranceData
+        .where((doc) =>
+            (doc.data() as Map<String, dynamic>)['status'] == selectedStatus)
+        .map((doc) => ListTile(
+              title: Text(
+                  (doc.data() as Map<String, dynamic>)['insuranceCompany'] ??
+                      ''),
+              subtitle: Text(
+                  '${(doc.data() as Map<String, dynamic>)['name'] ?? ''} (${(doc.data() as Map<String, dynamic>)['age'] ?? ''})'),
+              trailing: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text((doc.data() as Map<String, dynamic>)['insuranceId'] ??
+                      ''),
+                  SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Change status',
+                              style: TextStyle(fontSize: 5)),
+                          content: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    changeInsuranceStatus(doc.id, 'Approved');
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Approve'),
+                                ),
+                                SizedBox(height: 12),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    changeInsuranceStatus(doc.id, 'Rejected');
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Reject'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text('Change status'),
+                  ),
+                ],
+              ),
+            ))
+        .toList();
+  }
+
+  Future<void> changeInsuranceStatus(String docId, String newStatus) async {
+    await firestore
+        .collection('insurance')
+        .doc(docId)
+        .update({'status': newStatus});
+    fetchInsuranceData();
+  }
 
   Future<void> logout(BuildContext context) async {
     CircularProgressIndicator();
@@ -68,6 +123,174 @@ class _AgentState extends State<Agent> {
       context,
       MaterialPageRoute(
         builder: (context) => LoginPage(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //var _insuranceProvider = Provider.of<InsuranceProvider>(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Insurance Application List'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              logout(context);
+            },
+          ),
+        ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              title: Text('Pending'),
+              selected: selectedStatus == 'pending',
+              onTap: () {
+                setState(() {
+                  selectedStatus = 'pending';
+                  Navigator.pop(context);
+                });
+              },
+            ),
+            ListTile(
+              title: Text('Approved'),
+              selected: selectedStatus == 'approved',
+              onTap: () {
+                setState(() {
+                  selectedStatus = 'approved';
+                  Navigator.pop(context);
+                });
+              },
+            ),
+            ListTile(
+              title: Text('Rejected'),
+              selected: selectedStatus == 'rejected',
+              onTap: () {
+                setState(() {
+                  selectedStatus = 'rejected';
+                  Navigator.pop(context);
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+      body: Container(
+        child: Column(
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedStatus = 'pending';
+                  });
+                },
+                child: Text('Pending'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedStatus = 'approved';
+                  });
+                },
+                child: Text('Approved'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedStatus = 'rejected';
+                  });
+                },
+                child: Text('Rejected'),
+              ),
+            ]),
+            SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: insuranceData.length,
+                itemBuilder: (context, index) {
+                  if ((insuranceData[index].data()
+                          as Map<String, dynamic>)['status'] !=
+                      selectedStatus) {
+                    return SizedBox.shrink();
+                  }
+                  return ListTile(
+                    title: Text(
+                      (insuranceData[index].data()
+                              as Map<String, dynamic>)['insuranceCompany'] ??
+                          '',
+                    ),
+                    subtitle: Text(
+                      '${(insuranceData[index].data() as Map<String, dynamic>)['name'] ?? ''} (${(insuranceData[index].data() as Map<String, dynamic>)['age'] ?? ''})',
+                    ),
+                    trailing: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            (insuranceData[index].data()
+                                    as Map<String, dynamic>)['insuranceId'] ??
+                                '',
+                          ),
+                          SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text(
+                                    'Change status',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  content: SingleChildScrollView(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            changeInsuranceStatus(
+                                              insuranceData[index].id,
+                                              'approved',
+                                            );
+
+                                            Navigator.pop(context);
+                                            showAlert(QuickAlertType.success);
+                                          },
+                                          child: Text('Approve'),
+                                        ),
+                                        SizedBox(height: 12),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            changeInsuranceStatus(
+                                              insuranceData[index].id,
+                                              'rejected',
+                                            );
+
+                                            Navigator.pop(context);
+                                            showAlert(QuickAlertType.success);
+                                          },
+                                          child: Text('Reject'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Text('Change status'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

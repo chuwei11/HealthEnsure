@@ -105,6 +105,7 @@ class _InsuranceClaimsPageState extends State<InsuranceClaimsPage> {
                         phone: _phoneController.text.trim(),
                         email: _emailController.text.trim(),
                         age: int.parse(_ageController.text),
+                        status: 'pending',
                       ); // insuranceApplication
 
                       await createInsuranceForm(insurance);
@@ -120,40 +121,6 @@ class _InsuranceClaimsPageState extends State<InsuranceClaimsPage> {
           ),
         ));
   }
-
-  // Future<InsuranceForm> insuranceApplication(
-  //     {required String insuranceId,
-  //     required String company,
-  //     required String name,
-  //     required String phone,
-  //     required String email,
-  //     required int age
-  //     }) async {
-  //   // Reference to document
-  //   final insurance = FirebaseFirestore.instance.collection('insurance').doc();
-
-  //   final json = {
-  //     'insuranceId': insuranceId,
-  //     'insuranceCompany': company,
-  //     'name': name,
-  //     'age': age,
-  //     'phone': phone,
-  //     'email': email,
-  //   };
-
-  //   // Create doc and write data to firebase
-  //   await insurance.set(json);
-
-  //   return (InsuranceForm(
-  //     id,
-  //     insuranceId,
-  //     company,
-  //     name,
-  //     phone,
-  //     email,
-  //     age,
-  //   ));
-  // }
 
   Future createInsuranceForm(InsuranceForm insurance) async {
     final docInsurance =
@@ -180,6 +147,7 @@ class InsuranceForm {
   final String phone;
   final String email;
   final int age;
+  final String status;
 
   InsuranceForm(
       {this.id = '',
@@ -188,7 +156,8 @@ class InsuranceForm {
       required this.name,
       required this.phone,
       required this.email,
-      required this.age});
+      required this.age,
+      required this.status});
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -198,6 +167,7 @@ class InsuranceForm {
         'name': name,
         'age': age,
         'phone': phone,
+        'status': 'pending',
       };
 
   static InsuranceForm fromJson(Map<String, dynamic> json) => InsuranceForm(
@@ -207,5 +177,6 @@ class InsuranceForm {
         age: json['age'],
         email: json['email'],
         phone: json['phone'],
+        status: json['status'],
       );
 }
