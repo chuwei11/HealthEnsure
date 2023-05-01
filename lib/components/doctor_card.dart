@@ -56,7 +56,7 @@ class DoctorCard extends StatelessWidget {
                         children: const <Widget>[
                           Icon(Icons.star, color: Colors.amber, size: 18),
                           Spacer(flex: 1),
-                          Text('4.5'),
+                          Text('4.8'),
                           Spacer(flex: 1),
                           Text('Reviews'),
                           Spacer(flex: 1),

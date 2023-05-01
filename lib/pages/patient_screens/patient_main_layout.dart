@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:healthensure/pages/patient_screens/display_insurance_page.dart';
 import 'package:healthensure/pages/patient_screens/fav_doc_page.dart';
 import 'package:healthensure/pages/patient_screens/insurance_claims.dart';
 import 'package:healthensure/pages/patient_screens/patient_appointment_page.dart';

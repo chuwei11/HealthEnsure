@@ -7,8 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:healthensure/auth/register_page.dart';
 import 'package:healthensure/providers/dio_provider.dart';
 import 'package:provider/provider.dart';
-import '../pages/Admin_home_page.dart';
-import '../pages/agent_home_page.dart';
+import '../pages/agent_screens/agent_home_page.dart';
 import '../utils/config.dart';
 import 'forgot_pw_page.dart';
 import '../pages/patient_screens/patient_main_layout.dart';
@@ -72,14 +71,16 @@ class _LoginPageState extends State<LoginPage> {
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        if (documentSnapshot.get('role') == "Admin") {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Admin(),
-            ),
-          );
-        } else if (documentSnapshot.get('role') == "Patient") {
+        // Admin Page is only available in Laravel App
+        // if (documentSnapshot.get('role') == "Admin") {
+        //   Navigator.pushReplacement(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (context) => Admin(),
+        //     ),
+        //   );
+        // }
+        if (documentSnapshot.get('role') == "Patient") {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
