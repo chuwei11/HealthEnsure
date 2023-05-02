@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class InsuranceDisplay extends StatelessWidget {
   Future<void> retrieveData() async {
@@ -16,7 +17,11 @@ class InsuranceDisplay extends StatelessWidget {
       final String insuranceCompany = document['insuranceCompany'];
       final String name = document['name'];
       final String status = document['status'];
-      print('$insuranceCompany, $name, $status');
+      final date = document.containsKey('date')
+          ? DateFormat.yMd().format(document['date'].toDate())
+          : 'N/A';
+
+      print('$insuranceCompany, $name, $status, $date');
     });
   }
 
@@ -71,6 +76,12 @@ class InsuranceDisplay extends StatelessWidget {
                         SizedBox(height: 5.0),
                         Text(
                           'Status: ${document['status']}',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        SizedBox(height: 5.0),
+                        Text(
+                          'Date: ${document['date']}',
+                          //'Date: ${DateFormat.yMd().format(document['date'].toDate())}',
                           style: TextStyle(fontSize: 16.0),
                         ),
                       ],

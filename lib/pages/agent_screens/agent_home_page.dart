@@ -1,14 +1,9 @@
-import 'package:chips_choice/chips_choice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:healthensure/pages/patient_screens/insurance_claims.dart';
 import 'package:quickalert/quickalert.dart';
 import '../../auth/login_page.dart';
-import '../../auth/services/insurance_services.dart';
-import '../../providers/insurance_provider.dart';
-import 'package:provider/provider.dart';
 
 class Agent extends StatefulWidget {
   const Agent({Key? key}) : super(key: key);
@@ -181,35 +176,39 @@ class _AgentState extends State<Agent> {
       body: Container(
         child: Column(
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    selectedStatus = 'pending';
-                  });
-                },
-                child: Text('Pending'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    selectedStatus = 'approved';
-                  });
-                },
-                child: Text('Approved'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    selectedStatus = 'rejected';
-                  });
-                },
-                child: Text('Rejected'),
-              ),
-            ]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedStatus = 'pending';
+                    });
+                  },
+                  child: Text('Pending'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedStatus = 'approved';
+                    });
+                  },
+                  child: Text('Approved'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedStatus = 'rejected';
+                    });
+                  },
+                  child: Text('Rejected'),
+                ),
+              ],
+            ),
             SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
+                shrinkWrap: true,
                 itemCount: insuranceData.length,
                 itemBuilder: (context, index) {
                   if ((insuranceData[index].data()
@@ -217,73 +216,155 @@ class _AgentState extends State<Agent> {
                       selectedStatus) {
                     return SizedBox.shrink();
                   }
-                  return ListTile(
-                    title: Text(
-                      (insuranceData[index].data()
-                              as Map<String, dynamic>)['insuranceCompany'] ??
-                          '',
-                    ),
-                    subtitle: Text(
-                      '${(insuranceData[index].data() as Map<String, dynamic>)['name'] ?? ''} (${(insuranceData[index].data() as Map<String, dynamic>)['age'] ?? ''})',
-                    ),
-                    trailing: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            (insuranceData[index].data()
-                                    as Map<String, dynamic>)['insuranceId'] ??
-                                '',
+                  return Container(
+                    height: 120,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ListTile(
+                            title: Text(
+                              (insuranceData[index].data() as Map<String,
+                                      dynamic>)['insuranceCompany'] ??
+                                  '',
+                            ),
+                            subtitle: Text(
+                              '${(insuranceData[index].data() as Map<String, dynamic>)['name'] ?? ''} (${(insuranceData[index].data() as Map<String, dynamic>)['age'] ?? ''})',
+                            ),
                           ),
-                          SizedBox(height: 8),
-                          ElevatedButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: Text(
-                                    'Change status',
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  content: SingleChildScrollView(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            changeInsuranceStatus(
-                                              insuranceData[index].id,
-                                              'approved',
-                                            );
-
-                                            Navigator.pop(context);
-                                            showAlert(QuickAlertType.success);
-                                          },
-                                          child: Text('Approve'),
-                                        ),
-                                        SizedBox(height: 12),
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            changeInsuranceStatus(
-                                              insuranceData[index].id,
-                                              'rejected',
-                                            );
-
-                                            Navigator.pop(context);
-                                            showAlert(QuickAlertType.success);
-                                          },
-                                          child: Text('Reject'),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                        ),
+                        Container(
+                          width: 200,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  (insuranceData[index].data() as Map<String,
+                                          dynamic>)['insuranceId'] ??
+                                      '',
                                 ),
-                              );
-                            },
-                            child: Text('Change status'),
+                                SizedBox(height: 8),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    String imageUrl = (insuranceData[index]
+                                            .data()
+                                        as Map<String, dynamic>)['imageUrl'];
+                                    if (imageUrl != null) {
+                                      var imageBytes = await FirebaseStorage
+                                          .instance
+                                          .refFromURL(imageUrl)
+                                          .getData();
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          content: Image.memory(imageBytes!),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: Text('View Image'),
+                                ),
+                                SizedBox(height: 8),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.edit),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              'Change status',
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                          ],
+                                        ),
+                                        content: SingleChildScrollView(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  changeInsuranceStatus(
+                                                    insuranceData[index].id,
+                                                    'approved',
+                                                  );
+                                                  Navigator.pop(context);
+                                                  showAlert(
+                                                      QuickAlertType.success);
+                                                },
+                                                child: Text('Approve'),
+                                              ),
+                                              SizedBox(height: 12),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  changeInsuranceStatus(
+                                                    insuranceData[index].id,
+                                                    'rejected',
+                                                  );
+                                                  Navigator.pop(context);
+                                                  showAlert(
+                                                      QuickAlertType.success);
+                                                },
+                                                child: Text('Reject'),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                    // showDialog(
+                                    //   context: context,
+                                    //   builder: (context) => AlertDialog(
+                                    //     title: Text(
+                                    //       'Change status',
+                                    //       style: TextStyle(fontSize: 18),
+                                    //     ),
+                                    //     content: SingleChildScrollView(
+                                    //       child: Column(
+                                    //         mainAxisSize: MainAxisSize.min,
+                                    //         children: [
+                                    //           ElevatedButton(
+                                    //             onPressed: () {
+                                    //               changeInsuranceStatus(
+                                    //                 insuranceData[index].id,
+                                    //                 'approved',
+                                    //               );
+                                    //               Navigator.pop(context);
+                                    //               showAlert(
+                                    //                   QuickAlertType.success);
+                                    //             },
+                                    //             child: Text('Approve'),
+                                    //           ),
+                                    //           SizedBox(height: 12),
+                                    //           ElevatedButton(
+                                    //             onPressed: () {
+                                    //               changeInsuranceStatus(
+                                    //                 insuranceData[index].id,
+                                    //                 'rejected',
+                                    //               );
+                                    //               Navigator.pop(context);
+                                    //               showAlert(
+                                    //                   QuickAlertType.success);
+                                    //             },
+                                    //             child: Text('Reject'),
+                                    //           ),
+                                    //         ],
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // );
+                                  },
+                                  child: Text('Change status'),
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
                 },

@@ -17,6 +17,7 @@ void main() async {
       appId: "1:1018668404314:android:6c5ce1922c580cc70a5263",
       messagingSenderId: "1018668404314",
       projectId: "healthensure-4c0a8",
+      storageBucket: "healthensure-4c0a8.appspot.com",
     ),
   );
 

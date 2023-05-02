@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:healthensure/utils/config.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:file_picker/file_picker.dart';
 
 class InsuranceClaimsPage extends StatefulWidget {
   const InsuranceClaimsPage({super.key});
@@ -18,6 +20,8 @@ class _InsuranceClaimsPageState extends State<InsuranceClaimsPage> {
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _ageController = TextEditingController();
+
+  String imageUrl = '';
 
   final _auth = FirebaseAuth.instance;
 
@@ -89,12 +93,66 @@ class _InsuranceClaimsPageState extends State<InsuranceClaimsPage> {
                 decoration: InputDecoration(
                     prefixIcon: Icon(Icons.phone_android_rounded),
                     border: OutlineInputBorder(),
-                    hintText: 'Your phone no'),
+                    hintText: 'Your phone no.'),
               ),
-              Config.largeSpacingBox,
+              Config.mediumSpacingBox,
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: <Widget>[
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.blueGrey)),
+                    child: Text(
+                      'Upload Doctor Prescription',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                    onPressed: () async {
+                      // Pick image
+                      final result = await FilePicker.platform.pickFiles(
+                        type: FileType.custom,
+                        allowedExtensions: ['jpg', 'jpeg', 'png'],
+                      );
+
+                      if (result == null) return;
+                      String uniqueFileName =
+                          DateTime.now().millisecondsSinceEpoch.toString();
+
+                      // Upload to Firebase Storage
+
+                      //Get reference to storage root
+                      Reference referenceRoot = FirebaseStorage.instance.ref();
+                      Reference referenceDirImages =
+                          referenceRoot.child('docPrescriptions');
+
+                      //Create reference for doctor prescription to be stored
+                      Reference referenceImageToUpload =
+                          referenceDirImages.child(uniqueFileName);
+
+                      try {
+                        // Store file
+                        await referenceImageToUpload
+                            .putData(result.files.single.bytes!);
+                        // upon success, get download URL
+                        imageUrl =
+                            await referenceImageToUpload.getDownloadURL();
+                        print('Image uploaded to $imageUrl');
+
+                        // Update the UI with the new image URL
+                        setState(() {});
+                      } catch (error) {
+                        print('Error uploading image: $error');
+                      }
+                    },
+                  ),
+                  Config.smallSpacingBox,
+                  imageUrl != ''
+                      ? Image.network(
+                          imageUrl,
+                          height: 200.0,
+                        )
+                      : SizedBox(height: 0.0),
+                  Config.smallSpacingBox,
                   ElevatedButton(
                     child: Text('Submit'),
                     onPressed: () async {
@@ -106,8 +164,10 @@ class _InsuranceClaimsPageState extends State<InsuranceClaimsPage> {
                         email: _emailController.text.trim(),
                         age: int.parse(_ageController.text),
                         status: 'pending',
+                        date: DateTime.now(),
+                        imageUrl: imageUrl,
                       ); // insuranceApplication
-
+                      //Add a dialog box to show image uploaded
                       await createInsuranceForm(insurance);
                       Navigator.of(context).pushNamed('patientMain');
                       //Navigator.pop(context);
@@ -148,16 +208,21 @@ class InsuranceForm {
   final String email;
   final int age;
   final String status;
+  final DateTime date;
+  String imageUrl;
 
-  InsuranceForm(
-      {this.id = '',
-      required this.insuranceId,
-      required this.company,
-      required this.name,
-      required this.phone,
-      required this.email,
-      required this.age,
-      required this.status});
+  InsuranceForm({
+    this.id = '',
+    required this.insuranceId,
+    required this.company,
+    required this.name,
+    required this.phone,
+    required this.email,
+    required this.age,
+    required this.status,
+    required this.date,
+    required this.imageUrl,
+  });
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -168,6 +233,8 @@ class InsuranceForm {
         'age': age,
         'phone': phone,
         'status': 'pending',
+        'date': date.toIso8601String(),
+        'imageUrl': imageUrl,
       };
 
   static InsuranceForm fromJson(Map<String, dynamic> json) => InsuranceForm(
@@ -178,5 +245,7 @@ class InsuranceForm {
         email: json['email'],
         phone: json['phone'],
         status: json['status'],
+        date: DateTime.parse(json['date']),
+        imageUrl: json['imageUrl'],
       );
 }

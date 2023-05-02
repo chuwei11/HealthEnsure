@@ -34,23 +34,6 @@ class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
     }
   }
 
-  // Function to cancel an appointment
-  void cancelAppointment(int appointmentId) async {
-    final database = await openDatabase('doc_app.db');
-    try {
-      final db = await database;
-      await db.update(
-        'appointments',
-        {'status': 'cancelled'},
-        where: 'id = ?',
-        whereArgs: [appointmentId],
-      );
-      print('Appointment cancelled successfully!');
-    } catch (error) {
-      print('Failed to cancel appointment: $error');
-    }
-  }
-
   @override
   void initState() {
     getAppointments();
