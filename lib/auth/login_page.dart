@@ -330,7 +330,8 @@ class _LoginPageState extends State<LoginPage> {
                             final token = await DioProvider().getToken(
                                 _emailController.text,
                                 _passwordController.text);
-                            if (token) {
+                            if (token != null && token) {
+                              //if (token) {
                               //auth.loginSuccess();
                               ////update login status
                               final SharedPreferences prefs =
@@ -343,6 +344,7 @@ class _LoginPageState extends State<LoginPage> {
                                 //retrieve user data from the API using the token
                                 final response =
                                     await DioProvider().getUser(tokenValue);
+                                //if (response != null && response is! DioError) {
                                 if (response != null) {
                                   setState(() {
                                     //decode to json
@@ -367,6 +369,8 @@ class _LoginPageState extends State<LoginPage> {
                               }
                               // signIn(_emailController.text,
                               //     _passwordController.text);
+                            } else {
+                              print('Error logging in');
                             }
                             setState(() {
                               visible = true;

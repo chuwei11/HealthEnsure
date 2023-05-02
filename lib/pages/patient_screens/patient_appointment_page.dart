@@ -3,6 +3,7 @@ import 'package:healthensure/utils/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:healthensure/providers/dio_provider.dart';
 import 'dart:convert';
+import 'package:sqflite/sqflite.dart';
 
 class PatientAppointmentPage extends StatefulWidget {
   const PatientAppointmentPage({super.key});
@@ -30,6 +31,23 @@ class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
         schedules = json.decode(appointment);
         print(schedules);
       });
+    }
+  }
+
+  // Function to cancel an appointment
+  void cancelAppointment(int appointmentId) async {
+    final database = await openDatabase('doc_app.db');
+    try {
+      final db = await database;
+      await db.update(
+        'appointments',
+        {'status': 'cancelled'},
+        where: 'id = ?',
+        whereArgs: [appointmentId],
+      );
+      print('Appointment cancelled successfully!');
+    } catch (error) {
+      print('Failed to cancel appointment: $error');
     }
   }
 
@@ -195,7 +213,27 @@ class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
                               children: [
                                 Expanded(
                                   child: OutlinedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text(
+                                                "Cancellation not allowed"),
+                                            content: Text(
+                                                "Please contact hospital admin to cancel the appointment."),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: Text("OK"),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
                                     child: Text('Cancel',
                                         style: TextStyle(
                                             color: Config.secondaryColor)),
@@ -207,7 +245,27 @@ class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
                                     style: OutlinedButton.styleFrom(
                                       backgroundColor: Config.secondaryColor,
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title:
+                                                Text("Reschedule not allowed"),
+                                            content: Text(
+                                                "Please contact hospital admin to reschedule the appointment."),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: Text("OK"),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
                                     child: Text('Reschedule',
                                         style: TextStyle(color: Colors.white)),
                                   ),

@@ -76,7 +76,26 @@ class _AppointmentCardState extends State<AppointmentCard> {
                           'Cancel',
                           style: TextStyle(color: Colors.white),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Cancellation not allowed"),
+                                content: Text(
+                                    "Please contact hospital admin to cancel the appointment."),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(width: 20),

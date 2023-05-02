@@ -41,10 +41,43 @@ class DioProvider {
       } else {
         return false;
       }
-    } catch (error) {
-      return error;
+    }
+    // catch (error) {
+    //   return error;
+    // }
+    catch (error) {
+      if (error is DioError) {
+        // handle DioError specifically
+        if (error.response != null) {
+          print('Error fetching token: ${error.response!.statusCode}');
+        } else {
+          print('Connection failed due to internet connection');
+        }
+      } else {
+        // handle other types of errors
+        print('Error fetching token: $error');
+      }
+      return null; // indicate an error occurred
     }
   }
+
+  // Future<bool> getToken(String email, String password) async {
+  //   try {
+  //     var response = await Dio().post('http://127.0.0.1:8000/api/login',
+  //         data: {'email': email, 'password': password});
+
+  //     if (response.statusCode == 200 && response.data != '') {
+  //       final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //       await prefs.setString('token', response.data);
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
+  //   } catch (error) {
+  //     // If an error occurs, throw it as an exception
+  //     throw Exception('Error fetching token: $error');
+  //   }
+  // }
 
   // to get user data
   Future<dynamic> getUser(String token) async {
