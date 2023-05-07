@@ -204,7 +204,7 @@ class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
                                             title: Text(
                                                 "Cancellation not allowed"),
                                             content: Text(
-                                                "Please contact hospital admin to cancel the appointment."),
+                                                "Please contact hospital admin to confirm the appointment cancellation."),
                                             actions: <Widget>[
                                               TextButton(
                                                 child: Text("OK"),
@@ -236,7 +236,7 @@ class _PatientAppointmentPageState extends State<PatientAppointmentPage> {
                                             title:
                                                 Text("Reschedule not allowed"),
                                             content: Text(
-                                                "Please contact hospital admin to reschedule the appointment."),
+                                                "Please cancel the appointment and book again"),
                                             actions: <Widget>[
                                               TextButton(
                                                 child: Text("OK"),

@@ -67,6 +67,38 @@ class _AppointmentCardState extends State<AppointmentCard> {
                 Row(
                   //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // Expanded(
+                    //   child: ElevatedButton(
+                    //     style: ElevatedButton.styleFrom(
+                    //       backgroundColor: Colors.redAccent,
+                    //     ),
+                    //     child: const Text(
+                    //       'Cancel',
+                    //       style: TextStyle(color: Colors.white),
+                    //     ),
+                    //     onPressed: () {
+                    //       showDialog(
+                    //         context: context,
+                    //         builder: (BuildContext context) {
+                    //           return AlertDialog(
+                    //             title: Text("Cancellation not allowed"),
+                    //             content: Text(
+                    //                 "Please contact hospital admin to cancel the appointment."),
+                    //             actions: <Widget>[
+                    //               TextButton(
+                    //                 child: Text("OK"),
+                    //                 onPressed: () {
+                    //                   Navigator.of(context).pop();
+                    //                 },
+                    //               ),
+                    //             ],
+                    //           );
+                    //         },
+                    //       );
+                    //     },
+                    //   ),
+                    // ),
+                    const SizedBox(width: 20),
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -76,18 +108,78 @@ class _AppointmentCardState extends State<AppointmentCard> {
                           'Cancel',
                           style: TextStyle(color: Colors.white),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
+                          final SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          final token = prefs.getString('token') ?? '';
+                          final appointmentId =
+                              widget.doctor['appointments']['id'];
+
+                          // Show confirmation dialog
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text("Cancellation not allowed"),
+                                title: Text('Confirm Cancellation'),
                                 content: Text(
-                                    "Please contact hospital admin to cancel the appointment."),
+                                    'Are you sure you want to cancel this appointment?'),
                                 actions: <Widget>[
                                   TextButton(
-                                    child: Text("OK"),
+                                    child: Text('Cancel'),
                                     onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text('Confirm'),
+                                    onPressed: () async {
+                                      // Call cancelAppointment if user confirms
+                                      final response = await DioProvider()
+                                          .cancelAppointment(
+                                              appointmentId, token);
+                                      Navigator.of(context).pop();
+                                      if (response == 'success') {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title:
+                                                  Text('Appointment Cancelled'),
+                                              content: Text(
+                                                  'Your appointment has been cancelled successfully.'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: Text('OK'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        // Show error message
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title:
+                                                  Text('Appointment Cancelled'),
+                                              content: Text(
+                                                  'Your appointment has been cancelled successfully!'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: Text('OK'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      }
                                       Navigator.of(context).pop();
                                     },
                                   ),
@@ -98,6 +190,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                         },
                       ),
                     ),
+
                     const SizedBox(width: 20),
                     Expanded(
                       child: ElevatedButton(

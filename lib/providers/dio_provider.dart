@@ -167,6 +167,25 @@ class DioProvider {
     }
   }
 
+//cancel appointment
+  Future<dynamic> cancelAppointment(int id, String token) async {
+    try {
+      var response = await Dio().post(
+        'http://127.0.0.1:8000/api/cancel',
+        data: {'appointment_id': id},
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data['message'];
+      } else {
+        return 'Error';
+      }
+    } catch (error) {
+      return error;
+    }
+  }
+
   // store favourite doctor
   // update the fav list into local database
   Future<dynamic> storeFavDoc(String token, List<dynamic> favList) async {

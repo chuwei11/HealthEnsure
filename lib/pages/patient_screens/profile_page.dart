@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import "package:healthensure/pages/patient_screens/edit_health_data_page.dart";
 import "package:healthensure/utils/config.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import 'package:firebase_auth/firebase_auth.dart';
@@ -93,9 +94,16 @@ class _ProfilePageState extends State<ProfilePage> {
                               width: 20,
                             ),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditHealthDataPage()),
+                                );
+                              },
                               child: const Text(
-                                "Profile",
+                                "Health Data",
                                 style: TextStyle(
                                   color: Config.primaryColor,
                                   fontSize: 15,

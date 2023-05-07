@@ -251,35 +251,6 @@ class PatientHomePageState extends State<PatientHomePage> {
                   ),
                 )));
   }
-  // Future<void> getData() async {
-  //   // get toekn from share preferences
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final token = prefs.getString('token') ?? '';
 
-  //   if (token.isNotEmpty && token != '') {
-  //     //get user data
-  //     final response = await DioProvider().getUser(token);
-  //     if (response != null) {
-  //       setState(() {
-  //         //decode to json
-  //         user1 = json.decode(response);
-
-  //         // check for today's appointment
-  //         for (var doctorData in user1['doctor']) {
-  //           // if today's appointment exists
-  //           // retrieve the relevant doc info
-  //           if (doctorData['appointments'] != null) {
-  //             doctor = doctorData;
-  //           }
-  //         }
-  //       });
-  //     }
-  //   }
-  // }
-
-  // @override
-  // void initState() {
-  //   getData();
-  //   super.initState();
   // }
 }

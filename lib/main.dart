@@ -7,6 +7,7 @@ import 'package:healthensure/pages/patient_screens/booking_page.dart';
 import 'package:healthensure/pages/patient_screens/booking_success.dart';
 import 'package:healthensure/pages/patient_screens/insurance_display_page.dart';
 import 'package:healthensure/pages/patient_screens/patient_main_layout.dart';
+import 'package:healthensure/utils/health_data_preferences.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -20,6 +21,7 @@ void main() async {
       storageBucket: "healthensure-4c0a8.appspot.com",
     ),
   );
+  await HealthDataPreferences.init();
 
   runApp(const MyApp());
 }
